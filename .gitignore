@@ -1,3 +1,10 @@
+# Arquivos binários no geral
+*.bin
+*.dat
+*.idx
+
+# =-=-= Gerado automaticamente
+
 # Prerequisites
 *.d
 
