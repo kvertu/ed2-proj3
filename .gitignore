@@ -3,6 +3,10 @@
 *.dat
 *.idx
 
+# Pastas de lixo do vscode
+.vscode
+.vscode/*
+
 # =-=-= Gerado automaticamente
 
 # Prerequisites
