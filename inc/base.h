@@ -14,5 +14,6 @@
 // Para a arvore B
 #define SUCCESS_PROMOTION 1
 #define SUCCESS_NO_PROMOTION 2
+#define NIL -1
 
 #endif

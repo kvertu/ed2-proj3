@@ -9,24 +9,24 @@ Contains btree functions that directly involve file I/O:
 
 FILE* btfd; // global file descriptor for "btree.dat"
 
-int btopen()
+int btopen(FILE** index)
 {
-    btfd = fopen("btree.dat", "r+b");
-    return btfd != NULL;
+    (*index) = fopen("btree.dat", "r+b");
+    return (*index) != NULL;
 }
 
-void btclose()
+void btclose(FILE* index)
 {
-    fclose(btfd);
+    fclose(index);
 }
 
-short getroot()
+short getroot(FILE* index)
 {
     short root;
     
-    fseek(btfd, 0, SEEK_SET);;
+    fseek(index, 0, SEEK_SET);;
 
-    if (fread(&root, sizeof(short), 1, btfd) == 0)
+    if (fread(&root, sizeof(short), 1, index) == 0)
     {
         printf("Error: Unable to get root. \007\n");
         exit(1);
@@ -35,47 +35,47 @@ short getroot()
     return root;
 }
 
-void putroot(short root)
+void putroot(FILE* index, short root)
 {
-    fseek(btfd, 0, SEEK_SET);
-    fwrite(&root, sizeof(short), 1, btfd);
+    fseek(index, 0, SEEK_SET);
+    fwrite(&root, sizeof(short), 1, index);
 }
 
-short create_tree()
+short create_tree(FILE** index)
 {
     char key;
 
-    btfd = fopen("btree.dat", "w+b");
+    (*index) = fopen("btree.dat", "w+b");
     short temp = -1; // Header temporário para garantir que o código não vai quebrar
-    fwrite(&temp, sizeof(short), 1, btfd);
-    fclose(btfd);
+    fwrite(&temp, sizeof(short), 1, (*index));
+    fclose((*index));
 
-    btopen();
+    btopen(index);
     key = getchar();
 
     return create_root(key, NIL, NIL);
 }
 
-short getpage()
+short getpage(FILE* index)
 {
     long addr;
-    fseek(btfd, 0, SEEK_END); // sizeof(short) é o cabeçalho do arquivo
-    addr = ftell(btfd) - sizeof(short);
+    fseek(index, 0, SEEK_END); // sizeof(short) é o cabeçalho do arquivo
+    addr = ftell(index) - sizeof(short);
     return ((short)addr / PAGESIZE);
 }
 
-long btread(short rrn, BTPAGE *page_ptr)
+long btread(FILE* index, short rrn, BTPAGE *page_ptr)
 {
     long addr;
     addr = (long)rrn * (long)PAGESIZE + sizeof(short);
-    fseek(btfd, addr, SEEK_SET);
-    return fread(page_ptr, PAGESIZE, 1, btfd);
+    fseek(index, addr, SEEK_SET);
+    return fread(page_ptr, PAGESIZE, 1, index);
 }
 
-long btwrite(short rrn, BTPAGE *page_ptr)
+long btwrite(FILE* index, short rrn, BTPAGE *page_ptr)
 {
     long addr;
     addr = (long)rrn * (long)PAGESIZE + sizeof(short);
-    fseek(btfd, addr, SEEK_SET);
-    return fwrite(page_ptr, PAGESIZE, 1, btfd);
+    fseek(index, addr, SEEK_SET);
+    return fwrite(page_ptr, PAGESIZE, 1, index);
 }
