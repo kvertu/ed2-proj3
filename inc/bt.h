@@ -6,21 +6,21 @@ header file for btree programs
 #include "base.h"
 #include "hist.h"
 
-struct pkey_withoffset
+typedef struct 
 {
     pkey primary;
     int offset;
-};
+} pkey_woffset;
 
 #define MAXKEYS 4
 #define MINKEYS MAXKEYS/2
-#define NOKEY {{"@@@", "@@@"}, -1}
+#define NOKEY pkeyWOInit("@@@", "@@@", -1)
 #define NO 0
 #define YES 1
 
 typedef struct {
     short keycount; // number of keys in page
-    struct pkey_withoffset key[MAXKEYS]; // the actual keys
+    pkey_woffset key[MAXKEYS]; // the actual keys
     short child[MAXKEYS+1]; // ptrs to rrns of descendants
 } BTPAGE;
 
@@ -30,6 +30,7 @@ extern FILE* btfd; // file descriptor of btree file
 extern FILE* infd; // file descriptor of input file
 
 /* prototypes */
+pkey_woffset pkeyWOInit(char id[4], char sigla[4], int offset);
 void btclose(FILE* index);
 int btopen(FILE** index);
 long btread(FILE* index, short rrn, BTPAGE *page_ptr);
