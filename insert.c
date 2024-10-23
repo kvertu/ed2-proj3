@@ -10,7 +10,7 @@ If node is out of room,
 #include <stdio.h>
 #include "inc/bt.h"
 
-int insert(short rrn, char key, short *promo_r_child, char *promo_key)
+int insert(FILE* index, short rrn, pkey_woffset key, short *promo_r_child, pkey_woffset *promo_key)
 {
     BTPAGE page,         // current page
         newpage;         // new page created if split occurs
@@ -20,7 +20,7 @@ int insert(short rrn, char key, short *promo_r_child, char *promo_key)
     short pos,
         p_b_rrn;  // rrn promoted from below
 
-    char p_b_key; // key promoted from below
+    pkey_woffset p_b_key; // key promoted from below
 
     if (rrn == NIL)
     {
@@ -29,15 +29,16 @@ int insert(short rrn, char key, short *promo_r_child, char *promo_key)
         return (YES);
     }
 
-    btread(rrn, &page);
-    found = search_node(key, &page, &pos);
+    btread(index, rrn, &page);
+    found = search_node(key.primary, &page, &pos);
     if (found)
     {
-        printf("Error: attempt to insert duplicate key: %c \n\007", key);
+        printf("Error: attempt to insert duplicate key:\n");
+        printPkey(key.primary);
         return 0;
     }
 
-    promoted = insert(page.child[pos], key, &p_b_rrn, &p_b_key);
+    promoted = insert(index, page.child[pos], key, &p_b_rrn, &p_b_key);
     if (!promoted)
     {
         return NO;
@@ -46,14 +47,14 @@ int insert(short rrn, char key, short *promo_r_child, char *promo_key)
     if (page.keycount < MAXKEYS)
     {
         ins_in_page(p_b_key, p_b_rrn, &page);
-        btwrite(rrn, &page);
+        btwrite(index, rrn, &page);
         return NO;
     }
     else
     {
-        split(p_b_key, p_b_rrn, &page, promo_key, promo_r_child, &newpage);
-        btwrite(rrn, &page);
-        btwrite(*promo_r_child, &newpage);
+        split(index, p_b_key, p_b_rrn, &page, promo_key, promo_r_child, &newpage);
+        btwrite(index, rrn, &page);
+        btwrite(index, *promo_r_child, &newpage);
         return YES;
     }
 }

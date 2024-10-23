@@ -41,19 +41,17 @@ void putroot(FILE* index, short root)
     fwrite(&root, sizeof(short), 1, index);
 }
 
-short create_tree(FILE** index)
+short create_tree(FILE** index, char * filename, pkey_woffset key)
 {
-    char key;
 
-    (*index) = fopen("btree.dat", "w+b");
+    (*index) = fopen(filename, "w+b");
     short temp = -1; // Header temporário para garantir que o código não vai quebrar
     fwrite(&temp, sizeof(short), 1, (*index));
     fclose((*index));
 
     btopen(index);
-    key = getchar();
 
-    return create_root(key, NIL, NIL);
+    return create_root(*index, key, NIL, NIL);
 }
 
 short getpage(FILE* index)

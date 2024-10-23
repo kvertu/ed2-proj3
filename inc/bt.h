@@ -1,3 +1,6 @@
+#ifndef BT_H
+#define BT_H
+
 /* bt.h
 header file for btree programs
 */
@@ -35,13 +38,15 @@ void btclose(FILE* index);
 int btopen(FILE** index);
 long btread(FILE* index, short rrn, BTPAGE *page_ptr);
 long btwrite(FILE* index, short rrn, BTPAGE *page_ptr);
-short create_root(char key, short left, short right);
-short create_tree(FILE** index);
+short create_root(FILE* index, pkey_woffset key, short left, short right);
+short create_tree(FILE** index, char * filename, pkey_woffset key);
 short getpage(FILE* index);
 short getroot(FILE* index);
-int insert(short rrn, char key, short *promo_r_child, char *promo_key);
-void ins_in_page(char key,short r_child, BTPAGE *p_page);
+int insert(FILE* index, short rrn, pkey_woffset key, short *promo_r_child, pkey_woffset *promo_key);
+void ins_in_page(pkey_woffset key,short r_child, BTPAGE *p_page);
 void pageinit(BTPAGE *p_page);
 void putroot(FILE* index, short root);
-int search_node(char key, BTPAGE *p_page, short *pos);
-void split(char key, short r_child, BTPAGE *p_oldpage, char *promo_key, short *promo_r_child, BTPAGE *p_newpage);
+int search_node(pkey key, BTPAGE *p_page, short *pos);
+void split(FILE* index, pkey_woffset key, short r_child, BTPAGE *p_oldpage, pkey_woffset *promo_key, short *promo_r_child, BTPAGE *p_newpage);
+
+#endif
