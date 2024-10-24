@@ -35,7 +35,7 @@ extern FILE* infd; // file descriptor of input file
 /* prototypes */
 pkey_woffset pkeyWOInit(char id[4], char sigla[4], int offset);
 void btclose(FILE* index);
-int btopen(FILE** index);
+int btopen(FILE** index, char * filename);
 long btread(FILE* index, short rrn, BTPAGE *page_ptr);
 long btwrite(FILE* index, short rrn, BTPAGE *page_ptr);
 short create_root(FILE* index, pkey_woffset key, short left, short right);

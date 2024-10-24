@@ -9,9 +9,9 @@ Contains btree functions that directly involve file I/O:
 
 FILE* btfd; // global file descriptor for "btree.dat"
 
-int btopen(FILE** index)
+int btopen(FILE** index, char * filename)
 {
-    (*index) = fopen("btree.dat", "r+b");
+    (*index) = fopen(filename, "r+b");
     return (*index) != NULL;
 }
 
@@ -49,7 +49,7 @@ short create_tree(FILE** index, char * filename, pkey_woffset key)
     fwrite(&temp, sizeof(short), 1, (*index));
     fclose((*index));
 
-    btopen(index);
+    btopen(index, filename);
 
     return create_root(*index, key, NIL, NIL);
 }

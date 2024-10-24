@@ -1,4 +1,5 @@
 #include "inc/hist.h"
+#include <stdlib.h>
 
 void printPkey(pkey x)
 {

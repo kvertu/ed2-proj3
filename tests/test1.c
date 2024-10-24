@@ -30,7 +30,7 @@ int main()
     char id[4], sigla[4];
     int offset;
 
-    if (btopen(&in))
+    if (btopen(&in, "teste.pidx"))
     {
         root = getroot(in);
     }
