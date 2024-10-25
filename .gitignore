@@ -2,6 +2,7 @@
 *.bin
 *.dat
 *.idx
+*.pidx
 
 # Pastas de lixo do vscode
 .vscode
