@@ -12,6 +12,7 @@ If node is out of room,
 
 int insert(FILE* index, short rrn, pkey_woffset key, short *promo_r_child, pkey_woffset *promo_key)
 {
+    printf("Cheguei aqui!\n");
     BTPAGE page,         // current page
         newpage;         // new page created if split occurs
 
@@ -52,6 +53,7 @@ int insert(FILE* index, short rrn, pkey_woffset key, short *promo_r_child, pkey_
     }
     else
     {
+        printf("Divisão de nó.\n");
         split(index, p_b_key, p_b_rrn, &page, promo_key, promo_r_child, &newpage);
         btwrite(index, rrn, &page);
         btwrite(index, *promo_r_child, &newpage);

@@ -30,6 +30,8 @@ int main()
     char id[4], sigla[4];
     int offset;
 
+    printf("%ld\n", PAGESIZE);
+
     if (btopen(&in, "teste.pidx"))
     {
         root = getroot(in);
@@ -41,6 +43,7 @@ int main()
         scanf(" %d", &offset);
 
         root = create_tree(&in, "teste.pidx", readPkeyWO(id, sigla, offset));
+        printf("Chave %s%s inserida com sucesso!\n", id, sigla);
     }
 
     scanf(" %s", id);
@@ -54,6 +57,7 @@ int main()
         {
             root = create_root(in, promo_key, root, promo_rrn);
         }
+        printf("Chave %s%s inserida com sucesso!\n", id, sigla);
         scanf(" %s", id);
         scanf(" %s", sigla);
         scanf(" %d", &offset);

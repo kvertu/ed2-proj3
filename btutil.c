@@ -98,18 +98,23 @@ void split(FILE* index, pkey_woffset key, short r_child, BTPAGE *p_oldpage, pkey
 
     int midpoint = (MAXKEYS + 1) / 2; // Indice da chave que será promovida
 
-    for (j = 0; j < midpoint; j++)
+    int i;
+    for (i = 0, j = 0; i < midpoint; i++, j++)
     {
-        p_oldpage->key[j] = workkeys[j];
-        p_oldpage->child[j] = workchil[j];
-        p_newpage->key[j] = workkeys[j + 1 + midpoint];
-        p_newpage->child[j] = workchil[j + 1 + midpoint];
-        p_oldpage->key[j + midpoint] = NOKEY;
-        p_oldpage->child[j + 1 + midpoint] = NIL;
+        p_oldpage->key[i] = workkeys[j];
+        p_oldpage->child[i] = workchil[j];
     }
-    p_oldpage->child[midpoint] = workchil[midpoint];
-    p_newpage->child[midpoint] = workchil[j + 1 + midpoint];
-    p_newpage->keycount = MAXKEYS - midpoint;
-    p_oldpage->keycount = midpoint;
+    p_oldpage->child[i] = workchil[j];
+
+    for (i = 0, j = j + 1; i < MAXKEYS + 1 - midpoint; i++, j++)
+    { 
+        p_newpage->key[i] = workkeys[j];
+        p_newpage->child[i] = workchil[j];
+    }
+    p_newpage->child[i] = workchil[j];
+
+    p_newpage->keycount = MAXKEYS - i;
+    p_oldpage->keycount = i;
     *promo_key = workkeys[midpoint];
+    printf("Chave %s%s promovida.\n", workkeys[midpoint].primary.id, workkeys[midpoint].primary.sigla);
 }

@@ -15,7 +15,7 @@ typedef struct
     int offset;
 } pkey_woffset;
 
-#define MAXKEYS 4
+#define MAXKEYS 3
 #define MINKEYS MAXKEYS/2
 #define NOKEY pkeyWOInit("@@@", "@@@", -1)
 #define NO 0

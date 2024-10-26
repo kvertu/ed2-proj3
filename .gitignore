@@ -3,6 +3,7 @@
 *.dat
 *.idx
 *.pidx
+*.bkp
 
 # Pastas de lixo do vscode
 .vscode
