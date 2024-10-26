@@ -57,8 +57,8 @@ short create_tree(FILE** index, char * filename, pkey_woffset key)
 short getpage(FILE* index)
 {
     long addr;
-    fseek(index, 0, SEEK_END); // sizeof(short) é o cabeçalho do arquivo
-    addr = ftell(index) - sizeof(short);
+    fseek(index, 0, SEEK_END); 
+    addr = ftell(index) - sizeof(short); // sizeof(short) é o cabeçalho do arquivo
     return ((short)addr / PAGESIZE);
 }
 

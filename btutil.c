@@ -72,10 +72,9 @@ void ins_in_page(pkey_woffset key, short r_child, BTPAGE *p_page)
 void split(FILE* index, pkey_woffset key, short r_child, BTPAGE *p_oldpage, pkey_woffset *promo_key, short *promo_r_child, BTPAGE *p_newpage)
 {
     int j;
-    short mid;
     pkey_woffset workkeys[MAXKEYS + 1];
-
     short workchil[MAXKEYS + 2];
+
     for (j = 0; j < MAXKEYS; j++)
     {
         workkeys[j] = p_oldpage->key[j];
@@ -83,7 +82,7 @@ void split(FILE* index, pkey_woffset key, short r_child, BTPAGE *p_oldpage, pkey
     }
 
     workchil[j] = p_oldpage->child[j];
-    for (j = MAXKEYS; comparePkey(key.primary, workkeys[j - 1].primary) < 0 && j > 0; j--)
+    for (j = MAXKEYS; j > 0 && comparePkey(key.primary, workkeys[j - 1].primary) < 0; j--)
     {
         workkeys[j] = workkeys[j - 1];
         workchil[j + 1] = workchil[j];
@@ -93,18 +92,24 @@ void split(FILE* index, pkey_woffset key, short r_child, BTPAGE *p_oldpage, pkey
     workchil[j + 1] = r_child;
     *promo_r_child = getpage(index);
     pageinit(p_newpage);
-    for (j = 0; j < MINKEYS; j++)
+
+    // Observação: esse código só funciona quando a MAXKEYS é par
+    // Para o projeto, será necessário refatorar para ele funcionar com qualquer MAXKEYS > 1
+
+    int midpoint = (MAXKEYS + 1) / 2; // Indice da chave que será promovida
+
+    for (j = 0; j < midpoint; j++)
     {
         p_oldpage->key[j] = workkeys[j];
         p_oldpage->child[j] = workchil[j];
-        p_newpage->key[j] = workkeys[j + 1 + MINKEYS];
-        p_newpage->child[j] = workchil[j + 1 + MINKEYS];
-        p_oldpage->key[j + MINKEYS] = NOKEY;
-        p_oldpage->child[j + 1 + MINKEYS] = NIL;
+        p_newpage->key[j] = workkeys[j + 1 + midpoint];
+        p_newpage->child[j] = workchil[j + 1 + midpoint];
+        p_oldpage->key[j + midpoint] = NOKEY;
+        p_oldpage->child[j + 1 + midpoint] = NIL;
     }
-    p_oldpage->child[MINKEYS] = workchil[MINKEYS];
-    p_newpage->child[MINKEYS] = workchil[j + 1 + MINKEYS];
-    p_newpage->keycount = MAXKEYS - MINKEYS;
-    p_oldpage->keycount = MINKEYS;
-    *promo_key = workkeys[MINKEYS];
+    p_oldpage->child[midpoint] = workchil[midpoint];
+    p_newpage->child[midpoint] = workchil[j + 1 + midpoint];
+    p_newpage->keycount = MAXKEYS - midpoint;
+    p_oldpage->keycount = midpoint;
+    *promo_key = workkeys[midpoint];
 }
