@@ -10,9 +10,8 @@ If node is out of room,
 #include <stdio.h>
 #include "inc/bt.h"
 
-int insert(FILE* index, short rrn, pkey_woffset key, short *promo_r_child, pkey_woffset *promo_key)
+int insert(FILE* index, short rrn, pkey key, int offset, short *promo_r_child, pkey *promo_key, int *promo_offset)
 {
-    printf("Cheguei aqui!\n");
     BTPAGE page,         // current page
         newpage;         // new page created if split occurs
 
@@ -21,25 +20,27 @@ int insert(FILE* index, short rrn, pkey_woffset key, short *promo_r_child, pkey_
     short pos,
         p_b_rrn;  // rrn promoted from below
 
-    pkey_woffset p_b_key; // key promoted from below
+    pkey p_b_key; // key promoted from below
+    int p_b_offset;
 
     if (rrn == NIL)
     {
         *promo_key = key;
         *promo_r_child = NIL;
+        *promo_offset = offset;
         return (YES);
     }
 
     btread(index, rrn, &page);
-    found = search_node(key.primary, &page, &pos);
+    found = search_node(key, &page, &pos);
     if (found)
     {
         printf("Error: attempt to insert duplicate key:\n");
-        printPkey(key.primary);
+        printPkey(key);
         return 0;
     }
 
-    promoted = insert(index, page.child[pos], key, &p_b_rrn, &p_b_key);
+    promoted = insert(index, page.child[pos], key, offset, &p_b_rrn, &p_b_key, &p_b_offset);
     if (!promoted)
     {
         return NO;
@@ -47,14 +48,14 @@ int insert(FILE* index, short rrn, pkey_woffset key, short *promo_r_child, pkey_
 
     if (page.keycount < MAXKEYS)
     {
-        ins_in_page(p_b_key, p_b_rrn, &page);
+        ins_in_page(p_b_key, p_b_offset, p_b_rrn, &page);
         btwrite(index, rrn, &page);
         return NO;
     }
     else
     {
         printf("Divisão de nó.\n");
-        split(index, p_b_key, p_b_rrn, &page, promo_key, promo_r_child, &newpage);
+        split(index, p_b_key, p_b_offset, p_b_rrn, &page, promo_key, promo_offset, promo_r_child, &newpage);
         btwrite(index, rrn, &page);
         btwrite(index, *promo_r_child, &newpage);
         return YES;

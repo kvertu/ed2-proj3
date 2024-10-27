@@ -41,7 +41,7 @@ void putroot(FILE* index, short root)
     fwrite(&root, sizeof(short), 1, index);
 }
 
-short create_tree(FILE** index, char * filename, pkey_woffset key)
+short create_tree(FILE** index, char * filename, pkey key, int offset)
 {
 
     (*index) = fopen(filename, "w+b");
@@ -51,7 +51,7 @@ short create_tree(FILE** index, char * filename, pkey_woffset key)
 
     btopen(index, filename);
 
-    return create_root(*index, key, NIL, NIL);
+    return create_root(*index, key, offset, NIL, NIL);
 }
 
 short getpage(FILE* index)

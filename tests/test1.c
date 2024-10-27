@@ -7,12 +7,11 @@ If necessary creates new root.
 
 #include "../inc/bt.h"
 
-pkey_woffset readPkeyWO(char id[4], char sigla[4], int offset)
+pkey readPkey(char id[4], char sigla[4])
 {
-    pkey_woffset x;
-    strncpy(x.primary.id, id, 4);
-    strncpy(x.primary.sigla, sigla, 4);
-    x.offset = offset;
+    pkey x;
+    strncpy(x.id, id, 4);
+    strncpy(x.sigla, sigla, 4);
     return x;
 }
 
@@ -22,15 +21,14 @@ int main()
     int promoted;   // boolean: tells if a promotion from below
     short root,     // rrn of root page
         promo_rrn;  // rrn promoted from below
-    pkey_woffset promo_key, // key promoted from below
+    pkey promo_key, // key promoted from below
         key;        // next key to insert in tree
+    int promo_offset,
+        offset;
 
     FILE* in;
 
     char id[4], sigla[4];
-    int offset;
-
-    printf("%ld\n", PAGESIZE);
 
     if (btopen(&in, "teste.pidx"))
     {
@@ -42,26 +40,26 @@ int main()
         scanf(" %s", sigla);
         scanf(" %d", &offset);
 
-        root = create_tree(&in, "teste.pidx", readPkeyWO(id, sigla, offset));
+        root = create_tree(&in, "teste.pidx", readPkey(id, sigla), offset);
         printf("Chave %s%s inserida com sucesso!\n", id, sigla);
     }
 
     scanf(" %s", id);
     scanf(" %s", sigla);
     scanf(" %d", &offset);
-    key = readPkeyWO(id, sigla, offset);
+    key = readPkey(id, sigla);
     while (offset != -2)
     {
-        promoted = insert(in, root, key, &promo_rrn, &promo_key);
+        promoted = insert(in, root, key, offset, &promo_rrn, &promo_key, &promo_offset);
         if (promoted)
         {
-            root = create_root(in, promo_key, root, promo_rrn);
+            root = create_root(in, promo_key, promo_offset, root, promo_rrn);
         }
         printf("Chave %s%s inserida com sucesso!\n", id, sigla);
         scanf(" %s", id);
         scanf(" %s", sigla);
         scanf(" %d", &offset);
-        key = readPkeyWO(id, sigla, offset);
+        key = readPkey(id, sigla);
     }
     btclose(in);
 }
