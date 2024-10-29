@@ -77,3 +77,21 @@ long btwrite(FILE* index, short rrn, BTPAGE *page_ptr)
     fseek(index, addr, SEEK_SET);
     return fwrite(page_ptr, PAGESIZE, 1, index);
 }
+
+void btprint(FILE* index, short rrn)
+{
+    if (rrn < 0) return;
+
+    int i;
+    BTPAGE cur;
+
+    if (!btread(index, rrn, &cur)) return;
+
+    for (i = 0; i < cur.keycount; i++)
+    {
+        btprint(index, cur.child[i]);
+        printPkey(cur.keys[i]);
+        printf("\n");
+    }
+    btprint(index, cur.child[i]);
+}

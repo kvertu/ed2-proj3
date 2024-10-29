@@ -43,5 +43,6 @@ void pageinit(BTPAGE *p_page);
 void putroot(FILE* index, short root);
 int search_node(pkey key, BTPAGE *p_page, short *pos);
 void split(FILE* index, pkey key, int offset, short r_child, BTPAGE *p_oldpage, pkey *promo_key, int *promo_offset, short *promo_r_child, BTPAGE *p_newpage);
+void btprint(FILE* index, short rrn);
 
 #endif
