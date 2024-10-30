@@ -35,7 +35,7 @@ int insert(FILE* index, short rrn, pkey key, int offset, short *promo_r_child, p
     found = search_node(key, &page, &pos);
     if (found)
     {
-        printf("Error: attempt to insert duplicate key:\n");
+        printf("Chave duplicada!");
         printPkey(key);
         return 0;
     }

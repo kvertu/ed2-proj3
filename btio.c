@@ -91,7 +91,22 @@ void btprint(FILE* index, short rrn)
     {
         btprint(index, cur.child[i]);
         printPkey(cur.keys[i]);
-        printf("\n");
     }
     btprint(index, cur.child[i]);
+}
+
+void btprint_aluno(FILE* index, short rrn, pkey key)
+{
+    if (rrn < 0) return;
+
+    short i;
+    BTPAGE cur;
+    if (!btread(index, rrn, &cur)) return;
+
+    if (search_node(key, &cur, &i))
+        printPkey(cur.keys[i]);
+    else
+    {
+        btprint_aluno(index, cur.child[i], key);
+    }
 }

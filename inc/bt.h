@@ -23,9 +23,9 @@ typedef struct {
 } BTPAGE;
 
 #define PAGESIZE sizeof(BTPAGE)
-extern short root; // rrn of root page
-extern FILE* btfd; // file descriptor of btree file
-extern FILE* infd; // file descriptor of input file
+// extern short root; // rrn of root page
+// extern FILE* btfd; // file descriptor of btree file
+// extern FILE* infd; // file descriptor of input file
 
 /* prototypes */
 pkey pkeyInit(char id[4], char sigla[4]);
@@ -44,5 +44,6 @@ void putroot(FILE* index, short root);
 int search_node(pkey key, BTPAGE *p_page, short *pos);
 void split(FILE* index, pkey key, int offset, short r_child, BTPAGE *p_oldpage, pkey *promo_key, int *promo_offset, short *promo_r_child, BTPAGE *p_newpage);
 void btprint(FILE* index, short rrn);
+void btprint_aluno(FILE* index, short rrn, pkey key);
 
 #endif
