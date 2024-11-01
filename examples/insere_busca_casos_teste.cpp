@@ -1,5 +1,5 @@
 #include<stdio.h>
-#include<conio.h>
+// #include<conio.h>
 #include<string.h>
 
 int main() {
@@ -37,7 +37,7 @@ int main() {
                   {"001", "888"},
                   {"001", "444"},
 				  {"001", "333"},
-				  {"001", "000"}};//não encontrada
+				  {"001", "000"}};//nï¿½o encontrada
     
     fd = fopen("busca.bin", "w+b");
     fwrite(vet_b, sizeof(vet_b), 1, fd);

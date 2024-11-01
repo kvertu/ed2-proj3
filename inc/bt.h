@@ -34,6 +34,7 @@ int btopen(FILE** index, char * filename);
 long btread(FILE* index, short rrn, BTPAGE *page_ptr);
 long btwrite(FILE* index, short rrn, BTPAGE *page_ptr);
 short create_root(FILE* index, pkey key, int offset, short left, short right);
+void create_empty_tree(FILE** index, char * filename);
 short create_tree(FILE** index, char * filename, pkey key, int offset);
 short getpage(FILE* index);
 short getroot(FILE* index);
@@ -43,7 +44,8 @@ void pageinit(BTPAGE *p_page);
 void putroot(FILE* index, short root);
 int search_node(pkey key, BTPAGE *p_page, short *pos);
 void split(FILE* index, pkey key, int offset, short r_child, BTPAGE *p_oldpage, pkey *promo_key, int *promo_offset, short *promo_r_child, BTPAGE *p_newpage);
-void btprint(FILE* index, short rrn);
-void btprint_aluno(FILE* index, short rrn, pkey key);
+void btprint(FILE* index, FILE* file, short rrn);
+void btprint_aluno(FILE* index, FILE* file, short rrn, pkey key);
+int btsearch_aluno(FILE* index, short rrn, pkey key);
 
 #endif
