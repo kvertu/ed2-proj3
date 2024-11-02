@@ -90,12 +90,14 @@ void btprint(FILE* index, FILE* file, short rrn)
 
     int i;
     BTPAGE cur;
-
+    long addr = (long)rrn * (long)PAGESIZE + sizeof(short);
+    fseek(index, addr, SEEK_SET);
     if (!btread(index, rrn, &cur)) return;
 
     for (i = 0; i < cur.keycount; i++)
     {
         btprint(index, file, cur.child[i]);
+        // printf("%d\n", cur.child[i]);
         hist res;
         getHist(file, cur.offsets[i], &res);
         printHist(res);
@@ -106,10 +108,16 @@ void btprint(FILE* index, FILE* file, short rrn)
 
 void btprint_aluno(FILE* index, FILE* file, short rrn, pkey key)
 {
-    if (rrn < 0) return;
+    if (rrn < 0)
+    {
+        printf("Chave %s%s não encontrada.\n", key.id, key.sigla);
+        return;
+    }
 
     short i;
     BTPAGE cur;
+    long addr = (long)rrn * (long)PAGESIZE + sizeof(short);
+    fseek(index, addr, SEEK_SET);
     if (!btread(index, rrn, &cur)) return;
 
     if (search_node(key, &cur, &i))
@@ -117,6 +125,7 @@ void btprint_aluno(FILE* index, FILE* file, short rrn, pkey key)
         hist res;
         getHist(file, cur.offsets[i], &res);
         printHist(res);
+        printf("\n");
     }
     else
     {
@@ -126,16 +135,22 @@ void btprint_aluno(FILE* index, FILE* file, short rrn, pkey key)
 
 int btsearch_aluno(FILE* index, short rrn, pkey key)
 {
+    // printf("Cheguei aqui!\n");
     if (rrn < 0) return FAIL_NOT_FOUND;
 
     short i;
     BTPAGE cur;
+    long addr = (long)rrn * (long)PAGESIZE + sizeof(short);
+    fseek(index, addr, SEEK_SET);
     if (!btread(index, rrn, &cur)) return FAIL_INVALID_FILE;
 
     if (search_node(key, &cur, &i))
-        return cur.offsets[i];
+    {
+        return i;
+    }
     else
     {
+        // printf("Else\n");
         return btsearch_aluno(index, cur.child[i], key);
     }
 }

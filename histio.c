@@ -25,8 +25,15 @@ int insertHist(FILE* file, FILE* index, hist x)
     if (file == NULL || index == NULL)
         return FAIL_INVALID_FILE;
 
-    if (btsearch_aluno(index, getroot(index), x.chave) >= 0)
+    rewind(file);
+    rewind(index);
+
+    int test = btsearch_aluno(index, getroot(index), x.chave);
+    if (test != -1)
+    {
+        printf("Chave %s%s é duplicata.\n", x.chave.id, x.chave.sigla);
         return FAIL_DUPLICATE_HIST;
+    }
 
     // Inserção do registro no arquivo principal (nada de novo aqui)
     int regsize, offset;
@@ -39,7 +46,10 @@ int insertHist(FILE* file, FILE* index, hist x)
 
     // printf("Offset = %d\n", offset);
     // Inserção da chave no indice primário
-    return insertIndex(index, x, offset);
+    if (getroot(index) == -1)
+        return create_root(index, x.chave, offset, NIL, NIL);
+    else
+        return insertIndex(index, x, offset);
 }
 
 int getHist(FILE* file, int offset, hist * result)

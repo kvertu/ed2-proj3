@@ -110,6 +110,13 @@ void split(FILE* index, pkey key, int offset, short r_child, BTPAGE *p_oldpage, 
         p_oldpage->child[i] = workchil[j];
     }
     p_oldpage->child[i] = workchil[j];
+    while (i < MAXKEYS)
+    {
+        p_oldpage->keys[i] = NOKEY;
+        p_oldpage->offsets[i] = NIL;
+        p_oldpage->child[i + 1] = NIL;
+        i++;
+    }
 
     for (i = 0, j = j + 1; i < MAXKEYS + 1 - midpoint; i++, j++)
     { 
@@ -121,6 +128,15 @@ void split(FILE* index, pkey key, int offset, short r_child, BTPAGE *p_oldpage, 
 
     p_newpage->keycount = MAXKEYS - i;
     p_oldpage->keycount = i;
+
+    while (i < MAXKEYS)
+    {
+        p_newpage->keys[i] = NOKEY;
+        p_newpage->offsets[i] = NIL;
+        p_newpage->child[i + 1] = NIL;
+        i++;
+    }
+    
     *promo_key = workkeys[midpoint];
     *promo_offset = workoffsets[midpoint];
     printf("Chave %s%s promovida.\n", workkeys[midpoint].id, workkeys[midpoint].sigla);
