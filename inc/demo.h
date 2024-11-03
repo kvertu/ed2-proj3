@@ -43,7 +43,32 @@ void insertFromInsereBin(char * inserebin, char * filename, int first, int amoun
         insertHist(file, index, entries[i]);
     }
 
-    printf("\n\n=-=-=-=-=\n\n\n");
+    // btprint(index, file, getroot(index));
+    btclose(index);
+    fclose(file);
+}
+
+void printAllHists(char * filename)
+{
+    char indexname[FILENAME_MAX];
+    sprintf(indexname, "%s.pidx", filename);
+
+    FILE *file = fopen(filename, "r+b");
+    FILE *index;
+    btopen(&index, indexname);
+
+    if (!file)
+    {
+        file = fopen(filename, "w+b");
+        if (!file)
+            return;
+    }
+    if (!index)
+    {
+        create_empty_tree(&index, indexname);
+        if (!index)
+            return;
+    }
 
     btprint(index, file, getroot(index));
     btclose(index);
