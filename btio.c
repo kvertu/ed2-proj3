@@ -124,6 +124,7 @@ void btprint_aluno(FILE* index, FILE* file, short rrn, pkey key)
     {
         hist res;
         getHist(file, cur.offsets[i], &res);
+        printf("Página %d, Posição %d\n", rrn, i);
         printHist(res);
         printf("\n");
     }
