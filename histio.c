@@ -48,7 +48,10 @@ int insertHist(FILE* file, FILE* index, hist x)
     // printf("Offset = %d\n", offset);
     // Inserção da chave no indice primário
     if (getroot(index) == -1)
+    {
+        printf("Chave %s%s inserida.\n", x.chave.id, x.chave.sigla);
         return create_root(index, x.chave, offset, NIL, NIL);
+    }
     else
         return insertIndex(index, x, offset);
 }
