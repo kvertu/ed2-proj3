@@ -10,10 +10,11 @@ int insertIndex(FILE* index, hist x, int offset)
     int promo_offset;
     pkey promo_key;
 
-    if (insert(index, getroot(index), x.chave, offset, &promo_rrn, &promo_key, &promo_offset))
+    short root = getroot(index);
+    if (insert(index, root, x.chave, offset, &promo_rrn, &promo_key, &promo_offset))
     {
-        short root = create_root(index, promo_key, promo_offset, root, promo_rrn);
-        putroot(index, root);
+        short temp = create_root(index, promo_key, promo_offset, root, promo_rrn);
+        putroot(index, temp);
     }
 
     printf("Chave %s%s inserida.\n", x.chave.id, x.chave.sigla);
